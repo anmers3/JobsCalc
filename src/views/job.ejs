@@ -24,11 +24,16 @@
     
   </head>
   <body id="page-job">
-    <%- include('partials/page-header', {title: 'Nova sprint'}) %> 
+    
+    <%- include('partials/page-header', { title: 'Adicionar novo job'}) %>
 
     <div class="container flex animate-up delay-2">
       <main>
-        <form id="form-job">
+        
+        <form id="form-job" 
+          method="post" 
+          action="/job">
+        
           <fieldset>
             <legend>Dados do Job</legend>
             <div class="separator light"></div>
@@ -75,7 +80,7 @@
             type="submit" 
             title="Salvar Dados">Salvar</button>
           <a 
-            href="/index" 
+            href="/" 
             class="button gray">
             <img 
               src="/images/trash-24.svg" 

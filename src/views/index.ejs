@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#41414C" />
     <link rel="shortcut icon" href="images/favicon.png" type="image/png" />
-    <title>Tarefas</title>
+    <title>JobsCalc</title>
 
     <link rel="stylesheet" href="/styles/main.css" />
     <link rel="stylesheet" href="/styles/partials/page-header.css" />
@@ -32,13 +32,15 @@
           <img id="logo" src="/images/logo.svg" alt="Logo" />
           <span id="notification">
             <img src="/images/alert-octagon.svg" alt="Alerta" />
-            Você tem 2 horas livres no seu dia
+            <% if(freeHours <= 0){ %>
+              Você não tem horas livres
+            <% }else{ %>
+              Você tem <%= freeHours %> horas livres no seu dia
+            <% } %>
           </span>
           <a href="/profile" id="avatar-profile">
-            <p>Anmer <span>Ver perfil</span></p>
-            <img
-              src="https://avatars.githubusercontent.com/u/43189599?v=4"
-            />
+            <p><%= profile.name %> <span>Ver perfil</span></p>
+            <img src="<%= profile.avatar %>" />
           </a>
         </section>
 
@@ -46,17 +48,18 @@
 
         <section id="summary" class="animate-up delay-1">
           <h2 class="sr-only">Sumário</h2>
+
           <div class="info">
             <div class="total">
-              <strong>12</strong>
-              Sprints ao total
+              <strong><%= statusCount.total %></strong>
+              Projetos ao total
             </div>
             <div class="in-progress">
-              <strong>7</strong>
+              <strong><%= statusCount.progress %></strong>
               Em andamento
             </div>
             <div class="finished">
-              <strong>4</strong>
+              <strong><%= statusCount.done %></strong>
               Encerrados
             </div>
           </div>
@@ -64,7 +67,7 @@
             <span>
               <img src="/images/plus-24.svg" alt="Novo Job" /> 
             </span>
-            Adicionar sprint
+            Adicionar novo job
           </a>
         </section>
       </div>
@@ -75,66 +78,51 @@
         <h1 class="sr-only">Trabalhos</h1>
 
         <div class="cards">
-          <div class="card progress" data-id="1">
-            <div class="id column">1</div>
-            <div class="name column">
-              Automação de testes
-            </div>
-            <div class="deadline column">
-              <span>Prazo</span>
-              <p>3 dias para a entrega</p>
-            </div>
-            <div class="amount column">
-              <span>Valor</span>
-              <p>R$ 4500,00</p>
-            </div>
-            <div class="status badge column">
-              Em andamento
-            </div>
-            <div class="actions column flex">
-              <p class="sr-only">Ações</p>
-              <a 
-                href="/job-edit" 
-                class="button white edit" 
-                title="Editar Job">
-                <img src="/images/edit-24.svg" alt="Editar Job" />
-              </a>
-              <button class="delete button white" title="Excluir Job">
-                <img src="/images/trash-24.svg" alt="Excluir Job" />
-              </button>
-            </div>
-          </div>
-          <!-- end card -->
 
-          <div class="card done" data-id="2">
-            <div class="id column">2</div>
-            <div class="name column">
-              Design educational
+
+          <% jobs.forEach((job) => { %>
+
+            <div class="card <%= job.status %> " data-id="<%= job.id %>">
+              <div class="id column"><%= job.id %> </div>
+              <div class="name column">
+                <%= job.name %> 
+              </div>
+              <div class="deadline column">
+                <span>Prazo</span>
+                <p>
+                  <% if(job.status === 'progress') { %>
+                    <%= job.remaining %>  dias para a entrega
+                  <% } else { %>
+                    Prazo encerrado
+                  <% } %> 
+                </p>
+              </div>
+              <div class="amount column">
+                <span>Valor</span>
+                <p>R$ <%= job.budget.toFixed(2).replace('.', ',') %> </p>
+              </div>
+              <div class="status badge column">
+                <%= job.status === 'done' ? 'Encerrado' : 'Em andamento' %> 
+              </div>
+              <div class="actions column flex">
+                <p class="sr-only">Ações</p>
+                <a 
+                  href="/job/<%= job.id %> " 
+                  class="button white edit" 
+                  title="Editar Job">
+                  <img src="/images/edit-24.svg" alt="Editar Job" />
+                </a>
+                <button class="delete button white" title="Excluir Job">
+                  <img src="/images/trash-24.svg" alt="Excluir Job" />
+                </button>
+              </div>
             </div>
-            <div class="deadline column">
-              <span>Prazo</span>
-              <p>3 dias para a entrega</p>
-            </div>
-            <div class="amount column">
-              <span>Valor</span>
-              <p>R$ 7500,00</p>
-            </div>
-            <div class="status badge column">
-              Encerrado
-            </div>
-            <div class="actions column flex">
-              <p class="sr-only">Ações</p>
-              <a 
-                href="/job-edit" 
-                class="button white edit" 
-                title="Editar Job">
-                <img src="/images/edit-24.svg" alt="Editar Job" />
-              </a>
-              <button class="delete button white" title="Excluir Job">
-                <img src="/images/trash-24.svg" alt="Excluir Job" />
-              </button>
-            </div>
-          </div>
+            <!-- end card -->
+
+          <% }) %> 
+
+         
+
         </div>
         <!-- end cards -->
       </main>
@@ -147,7 +135,7 @@
         <h3>Excluir Job</h3>
         <p>Quer mesmo excluir esse job? <br/>
         Ele será apagado para sempre.  
-        <p>
+        </p>
         <footer>
           <a 
             class="button gray" 

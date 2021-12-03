@@ -1,17 +1,24 @@
 const express = require('express');
 const routes = express.Router()
 
-//req, res (usados para testes com funcao render, agora são renderizados pelo Ejs na funcao render)
+//req, res (usados para testes com funcao render e renderizados pelo Ejs na funcao render agora passam para o server.js)
+//const path = (__dirname + "/views/")
 
 
-const path = (__dirname + "/views/")
+//Chamando os controladores
+const ProfileController = require('./controllers/ProfileController.js')
+const JobController = require('./controllers/JobController')
+const DashboardController = require('./controllers/DashboardController')
 
-routes.get('/index', (req, res) => {return res.render(path + "index")})
-routes.get('/job', (req, res) => {return res.render(path + "job")})
-routes.get('/job-edit', (req, res) => {return res.render(path + "job-edit")})
-routes.get('/profile', (req, res) => {return res.render(path + "profile")})
+routes.get('/index', DashboardController.index)
+routes.get('/profile', ProfileController.index)
+routes.post('/profile', ProfileController.update)
+routes.get('/job', JobController.create)
+routes.post('/job', JobController.save)
+routes.get('/job/:id', JobController.show)
+routes.post('/job/:id', JobController.update)
+routes.post('/job/delete/:id', JobController.delete)
 
 
-
-
+ 
 module.exports = routes;
